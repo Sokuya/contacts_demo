@@ -1,0 +1,29 @@
+{
+  "name": "wdio_demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -r ts-node/register src/**/*.test.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.8.0",
+    "@types/selenium-webdriver": "^4.1.27",
+    "@types/webdriverio": "^4.13.3",
+    "@wdio/globals": "^9.4.0",
+    "@wdio/mocha-framework": "^9.2.8",
+    "mocha": "^10.8.2",
+    "ts-node": "^10.9.2",
+    "tsx": "^3.13.0",
+    "typescript": "^5.7.2",
+    "webdriverio": "^7.36.0"
+  },
+  "dependencies": {
+    "appium": "^2.12.1",
+    "selenium-webdriver": "^4.27.0"
+  }
+}
