@@ -147,7 +147,7 @@ The test accounts for several edge cases and includes mechanisms to handle them:
 
 <img width="326" alt="Simulator Screenshot - iPhone SE (3rd generation) - 2024-11-27 at 16 32 16 copy" src="https://github.com/user-attachments/assets/264eee8e-a630-4104-b9b9-701d828fd288"><img width="326" alt="Screenshot 2024-11-27 at 22 18 19 copy" src="https://github.com/user-attachments/assets/2da8d6b6-a7b9-4016-9af3-1ced08053614">
 
-3. **Custom Keyboard on Keychain-Saved Passwords:** If there are passwords saved in the keychain, a custom keyboard may appear during login instead of the default keyboard. The test adapts to handle this scenario seamlessly.
+3. **Custom Keyboard on Keychain-Saved Passwords:** If there are passwords saved in the keychain, a custom keyboard may appear during login instead of the default keyboard. This custom keyboard screen can prevent the URL address from being checked, as it obscures the view. 
 
 <img width="326" alt="Screenshot 2024-11-28 at 1 51 51" src="https://github.com/user-attachments/assets/51d3f134-d737-4a34-adbf-098fc9e8f801">
 
