@@ -1,18 +1,18 @@
 # contacts_demo
-1. [Overview](/#Overview)
-2. Setup Steps
-3. Prerequisites
-   - Installing Node.js
-     - Option 1: Install from the Official Website
-     - Option 2: Install via Package Manager (Optional)
-   - Installing Appium
-   - Setting Up the iOS Simulator
-     - Configuring Test Capabilities
-4. Run a TypeScript test
-5. Test Case Description
-   - Troubleshooting
-   - Handling Edge Cases in the Test
-   - Test chronology
+1. [Overview](#overview)
+2. [Setup Steps](#setup-steps)
+3. [Prerequisites](#prerequisites)
+   - [Installing Node.js](#installing-nodejs)
+     - [Option 1: Install from the Official Website](#option-1-install-from-the-official-website)
+     - [Option 2: Install via Package Manager (Optional)](#option-2-install-via-package-manager-optional)
+   - [Installing Appium](#installing-appium)
+   - [Setting Up the iOS Simulator](#setting-up-the-ios-simulator)
+     - [Configuring Test Capabilities](#configuring-test-capabilities)
+4. [Run a TypeScript Test](#run-a-typescript-test)
+5. [Test Case Description](#test-case-description)
+   - [Troubleshooting](#troubleshooting)
+   - [Handling Edge Cases in the Test](#handling-edge-cases-in-the-test)
+   - [Test Chronology](#test-chronology)
 
 ## Overview
 A demo project for testing iOS applications using Appium, WebDriverIO, and TypeScript.
