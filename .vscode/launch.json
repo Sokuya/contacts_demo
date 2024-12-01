@@ -13,7 +13,6 @@
                 "mocha",
                 "-r",
                 "ts-node/register",
-                "mocha-allure-reporter",
                 "src/contacts.test.ts"
             ],
             "cwd": "${workspaceFolder}",

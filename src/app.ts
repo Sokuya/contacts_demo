@@ -63,22 +63,28 @@ class App {
     await this.driver.deleteSession();
   }
 
-  /**
- * Takes a screenshot, saves it and returns the base64-encoded image data.
+/**
+ * Takes a screenshot, saves it, and returns the base64-encoded image data.
  * This method captures the current state of the app and saves the screenshot as a file within the './screenshots' directory.
  * 
- * @param {string} fileName - The name of the screenshot file (without the extension) to be saved.
+ * @param {string} [fileName] - The name of the screenshot file (without the extension) to be saved. If `fileName` is not provided, the screenshot will be saved with a timestamp.
  * @returns {Promise<string>} A promise that resolves with the base64-encoded screenshot data, or an empty string if the capture fails.
  * @throws {Error} Throws an error if the screenshot cannot be captured or saved.
  */
-  async takeScreenshot(fileName: string): Promise<string> {
+  async takeScreenshot(fileName?: string): Promise<string> {
     if (this.driver == null) {
       return '';
     }
     try {
+      let filePath;
       const screenshot = await this.driver.takeScreenshot();
-      const filePath = `./screenshots/${fileName}.png`;
-
+      if (fileName == null) {
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        filePath = `./screenshots/screenshot_${timestamp}.png`;
+      }
+      else {
+        filePath = `./screenshots/${fileName}.png`;
+      }
       // Ensure the directory exists
       fs.mkdirSync('./screenshots', { recursive: true });
 

@@ -4,6 +4,7 @@ import { ContactsPage } from './pages/ContactsPage';
 import { LinkedInPage } from './pages/LinkedInPage';
 import { TestData } from './config/TestData';
 import { devices } from './config/DeviceConfig'; // Import device matrix
+import { WaitHelper } from './utils/WaitHelper';
 import dotenv from 'dotenv';
 
 dotenv.config(); // Load environment variables from .env into process.env
@@ -25,7 +26,9 @@ const credentials = {
  * Default device is 'iPhoneSE'. Change the value in the DEVICE variable to test other devices.
  */
 const selectedDevice = process.env.DEVICE || 'iPhoneSE'; // selectedDevice default to iPhoneSE
-console.log("Selected DEVICE from environment:", process.env.DEVICE);
+if (process.env.DEVICE){
+  console.log("Selected DEVICE from environment:", process.env.DEVICE);
+}
 const deviceConfig = devices[selectedDevice as keyof typeof devices];
 if (!deviceConfig) {
   throw new Error(`Device configuration for "${selectedDevice}" not found.`);
@@ -45,9 +48,6 @@ describe('Create iOS Appium connection', function () {
   let app: App;
   let contactsPage: ContactsPage;
   let linkedInPage: LinkedInPage;
-
-  // allure.addFeature('My Feature');
-  // allure.addSeverity('critical');
 
   /**
    * Sets up the environment for each test by initializing the app and page objects.
@@ -86,13 +86,11 @@ describe('Create iOS Appium connection', function () {
     console.log(`Using LinkedIn username: ${credentials.username}`)
     await linkedInPage.showLinkedIn(credentials.username, credentials.password, socialProfile);
   })
-  it.only('should create new contact and take a screenshot', async () => {
-    //allure.addFeature('Contact Management');
-    //allure.addSeverity('critical');
+  it('Test should create new contact and take a screenshot at the end', async () => {
     const { firstName, lastName, company, phone, email, socialProfile } = TestData.contacts.default;
     await contactsPage.addNewContact(firstName, lastName, company, phone, email, socialProfile);
-    //let screenshot = await app.takeScreenshot('screenshot');
-    //allure.addAttachment('Screenshot', screenshot, 'png');
+    await WaitHelper.delay(1000); // Wait for 1 second before taking a screenshot to allow the animations to finish.
+    await app.takeScreenshot();
   });
 
   /**
@@ -100,12 +98,10 @@ describe('Create iOS Appium connection', function () {
    * Ensures that the application state is reset after each test run.
    */
   afterEach(async function () {
-    // if (this.currentTest?.state === 'failed') {
-    //   const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    //   await app.takeScreenshot(`failed_${this.currentTest.title}_${timestamp}`);
-    // }
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    await app.takeScreenshot(`screenshot_${timestamp}`);
+    if (this.currentTest?.state === 'failed') {
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      await app.takeScreenshot(`failed_${this.currentTest.title}_${timestamp}`);
+    }
     await app.quit();
   });
 
