@@ -123,6 +123,19 @@ appium
 ```bash
 npm test src/contacts.test.ts
 ```
+### Dynamic Device Testing Setup
+Run on the default device (iPhoneSE):
+```bash
+npm test
+```
+Run on a specific device (e.g., iPhone15):
+```bash
+DEVICE=iPhone15 npm test
+```
+Note: Ensure that the DEVICE variable is set to one of the configured devices in `DeviceConfig.ts`. The available devices are:
+- iPhoneSE
+- iPhone15
+- iPhone15Pro
 
 ## Test Case Description
 The script adds a new contact with the following details: first name, last name, company, phone number, and social profile (LinkedIn). Afterward, the script opens the contact's social profile and ensures successful login to LinkedIn for a full view of the profile.
