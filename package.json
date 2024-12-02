@@ -7,9 +7,11 @@
     "test": "mocha -r ts-node/register src/**/*.test.ts",
     "test:watch": "npm test -- --watch",
     "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
     "build": "tsc",
     "clean": "rimraf dist",
-    "pretest": "npm run lint"
+    "pretest": "npm run lint",
+    "format": "prettier --write src/**/*.ts"
   },
   "keywords": [],
   "author": "",
@@ -21,12 +23,17 @@
     "@types/node": "^20.8.0",
     "@types/selenium-webdriver": "^4.1.27",
     "@types/webdriverio": "^4.13.3",
+    "@typescript-eslint/eslint-plugin": "^8.16.0",
+    "@typescript-eslint/parser": "^8.16.0",
     "@wdio/globals": "^9.4.0",
     "@wdio/mocha-framework": "^9.2.8",
     "eslint": "^9.16.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
     "globals": "^15.13.0",
     "mocha": "^10.8.2",
     "npm-force-resolutions": "^0.0.10",
+    "prettier": "^3.4.1",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
     "tsx": "^3.13.0",
@@ -35,9 +42,11 @@
     "webdriverio": "^7.36.0"
   },
   "dependencies": {
+    "@types/node": "^20.8.0",
     "appium": "^2.12.1",
     "dotenv": "^16.4.5",
-    "selenium-webdriver": "^4.27.0"
+    "selenium-webdriver": "^4.27.0",
+    "webdriverio": "^7.36.0"
   },
   "resolutions": {
     "@types/node": "20.8.0",

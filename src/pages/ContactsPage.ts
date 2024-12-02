@@ -1,7 +1,7 @@
 //Style 'console.log' command to highlight in Debug Console
 const consoleLogYellow = (message: string) => {
-  const yellow = '\x1b[33m'; // Yellow text
-  const reset = '\x1b[0m'; // Reset all styles
+  const yellow = "\x1b[33m"; // Yellow text
+  const reset = "\x1b[0m"; // Reset all styles
   console.log(`${yellow}${message}${reset}`);
 };
 //import { Logger } from '../utils/Logger';
@@ -27,7 +27,7 @@ export class ContactsPage {
 
   /**
    * Represents the Contacts page and provides methods for interacting with it.
-   * 
+   *
    * @class ContactsPage
    * @param {WebdriverIO.Browser} driver - The WebDriver instance used to interact with the Contacts page.
    */
@@ -37,7 +37,7 @@ export class ContactsPage {
 
   /**
    * Inputs text into a specified field on the Contacts page.
-   * 
+   *
    * @param {string} fieldName - The accessibility ID or name of the field where the text will be entered.
    * @param {string} text - The text to input into the specified field.
    * @throws {Error} Throws an error if the WebDriver instance is not initialized.
@@ -45,7 +45,7 @@ export class ContactsPage {
    */
   async enterText(fieldName: string, text: string) {
     if (!this.driver) {
-      throw new Error('Driver is not initialized');
+      throw new Error("Driver is not initialized");
     }
     consoleLogYellow(`${fieldName}...`);
     await this.driver.$(`~${fieldName}`).setValue(text);
@@ -54,57 +54,75 @@ export class ContactsPage {
 
   /**
    * Adds a phone number to a contact on the Contacts page.
-   * 
+   *
    * @param {string} phoneNumber - The phone number to be added.
    * @throws {Error} Throws an error if the WebDriver instance is not initialized.
    * @returns {Promise<void>} Resolves when the phone number is successfully added.
    */
   async addPhoneNumber(phoneNumber: string) {
-    consoleLogYellow('Phone number...');
+    consoleLogYellow("Phone number...");
     if (!this.driver) {
-      throw new Error('Driver is not initialized');
+      throw new Error("Driver is not initialized");
     }
     await this.driver.$(ElementIdentifiers.PHONE).click();
-    await this.driver.$("-ios class chain:**/XCUIElementTypeStaticText[`name == \"mobile\"`]").click();
-    await this.driver.$("-ios class chain:**/XCUIElementTypeCell[`name == \"iPhone\"`]").click();
-    await this.driver.$("-ios class chain:**/XCUIElementTypeTextField[`name == \"iPhone\"`]").setValue(phoneNumber);
-    consoleLogYellow('added successfully!');
+    await this.driver
+      .$('-ios class chain:**/XCUIElementTypeStaticText[`name == "mobile"`]')
+      .click();
+    await this.driver
+      .$('-ios class chain:**/XCUIElementTypeCell[`name == "iPhone"`]')
+      .click();
+    await this.driver
+      .$('-ios class chain:**/XCUIElementTypeTextField[`name == "iPhone"`]')
+      .setValue(phoneNumber);
+    consoleLogYellow("added successfully!");
   }
 
   /**
    * Adds an email address to a contact on the Contacts page.
-   * 
+   *
    * @param {string} email - The email address to be added.
    * @throws {Error} Throws an error if the WebDriver instance is not initialized.
    * @returns {Promise<void>} Resolves when the email address is successfully added.
    */
   async addEmail(email: string) {
-    consoleLogYellow('Email...');
+    consoleLogYellow("Email...");
     if (!this.driver) {
-      throw new Error('Driver is not initialized');
+      throw new Error("Driver is not initialized");
     }
     await this.driver.$(ElementIdentifiers.EMAIL).click();
-    await this.driver.$(`-ios class chain:**/XCUIElementTypeTextField[\`name == "home"\`]`).setValue(email);
-    consoleLogYellow('added successfully!');
+    await this.driver
+      .$(`-ios class chain:**/XCUIElementTypeTextField[\`name == "home"\`]`)
+      .setValue(email);
+    consoleLogYellow("added successfully!");
   }
 
   /**
    * Adds a social profile to a contact on the Contacts page.
-   * 
+   *
    * @param {string} socialProfile - The social profile URL or identifier to be added.
    * @throws {Error} Throws an error if the WebDriver instance is not initialized.
    * @returns {Promise<void>} Resolves when the social profile is successfully added.
    */
   async addSocialProfile(socialProfile: string) {
-    consoleLogYellow('Social profile...');
+    consoleLogYellow("Social profile...");
     if (!this.driver) {
-      throw new Error('Driver is not initialized');
+      throw new Error("Driver is not initialized");
     }
-    await this.driver.$(`-ios predicate string:name == 'add social profile'`).click();
-    await this.driver.$(`-ios class chain:**/XCUIElementTypeStaticText[\`name == "Twitter"\`]`).click();
-    await this.driver.$(`-ios class chain:**/XCUIElementTypeStaticText[\`name == "LinkedIn"\`]`).click();
-    await this.driver.$(`-ios class chain:**/XCUIElementTypeTextField[\`name == "LinkedIn"\`]`).setValue(socialProfile);
-    consoleLogYellow('added successfully!');
+    await this.driver
+      .$(`-ios predicate string:name == 'add social profile'`)
+      .click();
+    await this.driver
+      .$(`-ios class chain:**/XCUIElementTypeStaticText[\`name == "Twitter"\`]`)
+      .click();
+    await this.driver
+      .$(
+        `-ios class chain:**/XCUIElementTypeStaticText[\`name == "LinkedIn"\`]`,
+      )
+      .click();
+    await this.driver
+      .$(`-ios class chain:**/XCUIElementTypeTextField[\`name == "LinkedIn"\`]`)
+      .setValue(socialProfile);
+    consoleLogYellow("added successfully!");
   }
 
   /**
@@ -120,13 +138,20 @@ export class ContactsPage {
    * @param socialProfile - The contact's LinkedIn or other social profile link.
    * @returns {Promise<void>} Resolves when the contact is successfully added.
    */
-  public async addNewContact(firstName: string, lastName: string, company: string, phoneNumber: string, email: string, socialProfile: string) {
-    consoleLogYellow('Opening Contacts app');
+  public async addNewContact(
+    firstName: string,
+    lastName: string,
+    company: string,
+    phoneNumber: string,
+    email: string,
+    socialProfile: string,
+  ) {
+    consoleLogYellow("Opening Contacts app");
     if (!this.driver) {
-      throw new Error('Driver is not initialized');
+      throw new Error("Driver is not initialized");
     }
     try {
-      consoleLogYellow('Adding a new contact...');
+      consoleLogYellow("Adding a new contact...");
       await this.driver.$(ElementIdentifiers.ADD_BUTTON).click(); //Add new contact
       await this.enterText(ElementIdentifiers.FIRST_NAME, firstName);
       await this.enterText(ElementIdentifiers.LAST_NAME, lastName);
@@ -135,9 +160,9 @@ export class ContactsPage {
       await this.addEmail(email);
       await this.addSocialProfile(socialProfile);
       await this.driver.$(ElementIdentifiers.DONE_BUTTON).click(); // Save the contact
-      consoleLogYellow('Done. Contact was added');
+      consoleLogYellow("Done. Contact was added");
     } catch (error) {
-      console.error('Failed to add contact:', error);
+      console.error("Failed to add contact:", error);
     }
   }
 
