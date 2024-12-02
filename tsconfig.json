@@ -23,6 +23,6 @@
 
     /* Completeness */
     "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
-    "types": ["mocha", "node", "selenium-webdriver"]
+    "types": ["mocha", "node", "selenium-webdriver", "@wdio/globals/types", "@wdio/mocha-framework"]
   }
 }

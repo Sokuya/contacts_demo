@@ -51,8 +51,7 @@
     "ms": "^2.1.3",
     "selenium-webdriver": "^4.27.0",
     "string_decoder": "^1.3.0",
-    "tsx": "^4.19.2",
-    "webdriverio": "^9.4.1"
+    "tsx": "^4.19.2"
   },
   "resolutions": {
     "@types/node": "20.17.9",

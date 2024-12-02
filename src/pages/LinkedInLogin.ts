@@ -70,9 +70,7 @@ export class LinkedInLogin {
     isDefaultLogin = false;
 
     try {
-      const welcomeBackElements: WebdriverIO.Element[] = await this.driver.$$(
-        ElementIdentifiers.WELCOME_BACK,
-      );
+      const welcomeBackElements: WebdriverIO.Element[] = Array.from(await this.driver.$$(ElementIdentifiers.WELCOME_BACK));
       if (welcomeBackElements.length == 0) {
         //"'Welcome back' screen not present.
         consoleLogYellow("Filling in username...");
@@ -86,7 +84,7 @@ export class LinkedInLogin {
         isDefaultLogin = true;
         signInButton = await this.driver.$(
           '-ios class chain:**/XCUIElementTypeButton[`name == "Sign in"`]',
-        );
+        ) as unknown as WebdriverIO.Element | null;
       } else {
         consoleLogYellow(
           "'Welcome back' screen detected. Skipping enterting username.",
@@ -121,7 +119,7 @@ export class LinkedInLogin {
       );
       signInButton = await this.driver.$(
         ElementIdentifiers.NORMAL_SIGN_IN_BUTTON,
-      );
+      )  as unknown as WebdriverIO.Element | null;
     }
     if (signInButton) {
       await signInButton.click();
@@ -141,7 +139,7 @@ export class LinkedInLogin {
     //Step 4: Handle "Save password" prompt
     const savePasswordPrompt: WebdriverIO.Element[] = await this.driver.$$(
       '//XCUIElementTypeOther[@name="Would you like to save this password to use with apps and websites?"]/XCUIElementTypeOther',
-    );
+    ) as unknown as WebdriverIO.Element[];
     if (savePasswordPrompt.length > 0) {
       await this.driver.$(ElementIdentifiers.NOT_NOW_BUTTON).click(); //notNowButton
       consoleLogYellow("Skipped saving password.");

@@ -63,9 +63,14 @@ export class LinkedInPage {
       let found = false;
       let linkedInElements: WebdriverIO.Element[];
       while (!found) {
-        linkedInElements = await this.driver.$$(
+        linkedInElements = (await this.driver.$$(
           '-ios class chain:**/XCUIElementTypeCell[`name == "LinkedIn"`]',
-        );
+        ) as unknown) as WebdriverIO.Element[];
+        //
+        // linkedInElements = await this.driver.$$(
+        //   '-ios class chain:**/XCUIElementTypeCell[`name == "LinkedIn"`]',
+        // )
+        //
         if (linkedInElements.length > 0) {
           // If the element is found (length at least 1), click it and break the loop
           await linkedInElements[0].click();
@@ -108,7 +113,7 @@ export class LinkedInPage {
       // Checking if the keyboard is hiding the URL bar (happens if password is saved in keychain)
       const keyboardButton: WebdriverIO.Element[] = await this.driver.$$(
         ElementIdentifiers.KEYBOARD,
-      );
+      ) as unknown as WebdriverIO.Element[];
       if (keyboardButton.length > 0) {
         const isDisplayed = await keyboardButton[0].isDisplayed();
         if (isDisplayed) {
@@ -151,7 +156,7 @@ export class LinkedInPage {
       //Locate popups using accessibility ID "Dismiss"
       const popups: WebdriverIO.Element[] = await this.driver.$$(
         ElementIdentifiers.DISMISS_BUTTON,
-      );
+      ) as unknown as WebdriverIO.Element[];
       if (popups.length > 0) {
         consoleLogYellow("Closing popups...");
         const dismissButton = await this.driver.$(
@@ -192,7 +197,7 @@ export class LinkedInPage {
     try {
       const continueButton: WebdriverIO.Element[] = await this.driver.$$(
         `-ios class chain:**/XCUIElementTypeStaticText[\`name == "Continue"\`]`,
-      );
+      ) as unknown as WebdriverIO.Element[];
       if (
         continueButton.length > 0 &&
         (await continueButton[0].isDisplayed())
@@ -307,7 +312,7 @@ export class LinkedInPage {
           //make sure that we are logged in, if not 'Sign in' is presented
           const signInButton: WebdriverIO.Element[] = await this.driver.$$(
             `-ios class chain:**/XCUIElementTypeLink[\`name == "Sign in"\`]`,
-          );
+          ) as unknown as WebdriverIO.Element[];
           //checking for sign-in button
           if (signInButton.length > 0) {
             //meaning not logged in

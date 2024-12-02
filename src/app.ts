@@ -5,7 +5,8 @@ const consoleLogYellow = (message: string) => {
   console.log(`${yellow}${message}${reset}`);
 };
 
-import { remote, RemoteOptions } from 'webdriverio';
+import { remote } from 'webdriverio';
+import { Capabilities } from '@wdio/types'
 import { Logger } from './utils/Logger';
 import { WaitHelper } from './utils/WaitHelper';
 import fs from 'fs';
@@ -15,7 +16,7 @@ const envAppiumPort = process.env.APPIUM_PORT;
 if (envAppiumPort != null) {
   appiumPort = parseInt(envAppiumPort, 10);
 }
-const appiumOptions: RemoteOptions = {
+const appiumOptions: Capabilities.WebdriverIOConfig  = {
   hostname: process.env.APPIUM_HOST ?? '127.0.0.1',
   port: appiumPort,
   logLevel: 'info',
