@@ -1,5 +1,5 @@
-import { WaitHelper } from '../utils/WaitHelper';
-
+import { Constants, WaitHelper } from '../utils/WaitHelper';
+import { LinkedInLogin } from './LinkedInLogin';
 //Style 'console.log' command to highlight in Debug Console
 const consoleLogYellow = (message: string) => {
     const yellow = '\x1b[33m'; // Yellow text
@@ -7,7 +7,7 @@ const consoleLogYellow = (message: string) => {
     console.log(`${yellow}${message}${reset}`);
 };
 
-enum ElementIdentifiers { 
+export enum ElementIdentifiers {
     KEYBOARD = "~Keyboard",
     TAB_BAR_TITLE = "~TabBarItemTitle",
     DISMISS_BUTTON = "~Dismiss",
@@ -20,13 +20,13 @@ enum ElementIdentifiers {
     VERTICAL_SCROLL = "accessibility id:Vertical scroll bar, 2 pages",
     NORMAL_SIGN_IN_BUTTON = "~Sign in",
     NOT_NOW_BUTTON = "~Not Now",
-  }
+}
 
-enum URLs {
+export enum URLs {
     LINKEDIN_LOGIN = "https://www.linkedin.com/login",
     LINKEDIN_FEED = "https://www.linkedin.com/feed",
     LINKEDIN_AUTH = "https://www.linkedin.com/authwall",
-  }
+}
 
 /**
  * Represents the LinkedIn page and provides methods for interacting with elements on that page.
@@ -34,6 +34,7 @@ enum URLs {
  */
 export class LinkedInPage {
     private driver: WebdriverIO.Browser;
+    private linkedinLogin: LinkedInLogin;
 
     /**
      * Creates an instance of the LinkedInPage class.
@@ -41,6 +42,7 @@ export class LinkedInPage {
      */
     constructor(driver: WebdriverIO.Browser) {
         this.driver = driver;
+        this.linkedinLogin = new LinkedInLogin(this.driver);
     }
 
     /**
@@ -72,8 +74,12 @@ export class LinkedInPage {
                     await this.driver.execute('mobile: swipe', { direction: 'up', percent: 0.3 });
                 }
             }
-        } catch (e: any) {
-            console.error("Failed to load contact LinkedIn: " + e);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error("Failed to load contact LinkedIn:", error.message);
+            } else {
+                console.error("An unknown error occurred while loading contact LinkedIn:", error);
+            }
         }
     }
 
@@ -90,7 +96,7 @@ export class LinkedInPage {
         }
         try {
             // Checking if the keyboard is hiding the URL bar (happens if password is saved in keychain)
-            let keyboardButton: WebdriverIO.Element[] = await this.driver.$$(ElementIdentifiers.KEYBOARD);
+            const keyboardButton: WebdriverIO.Element[] = await this.driver.$$(ElementIdentifiers.KEYBOARD);
             if (keyboardButton.length > 0) {
                 const isDisplayed = await keyboardButton[0].isDisplayed();
                 if (isDisplayed) {
@@ -99,11 +105,15 @@ export class LinkedInPage {
                     await this.driver.$(ElementIdentifiers.TAB_BAR_TITLE).click();
                 }
             }
-        } catch (e: any) {
-            if (e.name == 'NoSuchElementError') {
-                console.log("Element 'Keyboard' not found. Continuing test..."); // Log if element is not found
+        } catch (e: unknown) {
+            if (e instanceof Error) {
+                if (e.name === 'NoSuchElementError') {
+                    console.log("Element 'Keyboard' not found. Continuing test..."); // Log if element is not found
+                } else {
+                    throw e; // Rethrow other unexpected errors
+                }
             } else {
-                throw e; // Rethrow other unexpected errors
+                console.error("An unknown error occurred:", e);
             }
         }
     }
@@ -116,17 +126,18 @@ export class LinkedInPage {
      * @throws {Error} If the driver is not initialized.
      * @returns {Promise<void>} Resolves when the method completes its execution.
      */
-    async closedPopUps() {
+    async closePopUps() {
         if (!this.driver) {
             throw new Error('Driver is not initialized');
         }
         try {
             // Wait for a few seconds to allow pop-ups to appear
-            await new Promise(resolve => setTimeout(resolve, 3000));
-            consoleLogYellow("waiting 3 seconds...");
+            const timeout = Constants.TIMEOUTS.MEDIUM;
+            await WaitHelper.delay(timeout);
+            consoleLogYellow(`waiting ${timeout / 1000} seconds...`);
 
             //Locate popups using accessibility ID "Dismiss"
-            let popups: WebdriverIO.Element[] = await this.driver.$$(ElementIdentifiers.DISMISS_BUTTON);
+            const popups: WebdriverIO.Element[] = await this.driver.$$(ElementIdentifiers.DISMISS_BUTTON);
             if (popups.length > 0) {
                 consoleLogYellow("Closing popups...");
                 const dismissButton = await this.driver.$(ElementIdentifiers.DISMISS_BUTTON); // Click first visible "Dismiss" button
@@ -134,8 +145,12 @@ export class LinkedInPage {
                     await dismissButton.click();
                 }
             }
-        } catch (e: any) {
-            console.log("Error in closedPopUps():", e.message);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.log("Error in closePopUps():", error.message);
+            } else {
+                console.error("An unknown error occurred in closePopUps():", error);
+            }
         }
     }
 
@@ -151,22 +166,26 @@ export class LinkedInPage {
         if (!this.driver) {
             throw new Error('Driver is not initialized');
         }
-        await this.closedPopUps(); // Ensure all pop-ups are closed before proceeding
+        await this.closePopUps(); // Ensure all pop-ups are closed before proceeding
         await this.driver.$(ElementIdentifiers.TAB_BAR_TITLE).click(); // Navigate to the URL field
         const currentUrl = await this.driver.$(ElementIdentifiers.URL_ADDRESS).getAttribute("value"); // Get the current URL
 
         //Deal with the Spotlight search pop-up occurring on first use
         try {
-            let continueButton: WebdriverIO.Element[] = await this.driver.$$(`-ios class chain:**/XCUIElementTypeStaticText[\`name == "Continue"\`]`);
+            const continueButton: WebdriverIO.Element[] = await this.driver.$$(`-ios class chain:**/XCUIElementTypeStaticText[\`name == "Continue"\`]`);
             if (continueButton.length > 0 && (await continueButton[0].isDisplayed())) {
                 await continueButton[0].click();
                 consoleLogYellow("Closing Spotlight Search information menu, Continue button was found and clicked.");
             }
-        } catch (e: any) {
-            if (e.name == 'NoSuchElementError') {
-                console.log("No Spotlight Search popup. Continuing test...");
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                if (error.name === 'NoSuchElementError') {
+                    console.log("No Spotlight Search popup. Continuing test...");
+                } else {
+                    throw error; // Rethrow unexpected errors
+                }
             } else {
-                throw e; // Rethrow unexpected errors
+                console.error("An unknown error occurred in getURL():", error);
             }
         }
         await this.driver.$(ElementIdentifiers.CANCEL_BUTTON).click(); // Close the URL bar
@@ -189,97 +208,27 @@ export class LinkedInPage {
             await this.driver.execute('mobile: activateApp', { bundleId: 'com.apple.MobileAddressBook' });
             await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for the app to load
             consoleLogYellow("waiting 2 seconds...");
-        } catch (e: any) {
-            console.error("Error in returnToContactsApp():", e.message);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error("Error in returnToContactsApp():", error.message);
+            } else {
+                console.error("An unknown error occurred in returnToContactsApp():", error);
+            }
         }
     }
-
     /**
-     * Logs into a LinkedIn account using the provided credentials.
-     *
-     * This method automates the LinkedIn login process through the WebDriver.
-     *
-     * @param username - The email or username of the LinkedIn account.
-     * @param password - The password for the LinkedIn account.
-     * @throws {AuthenticationError} When login fails due to incorrect credentials or network issues.
-     * @returns {Promise<void>} Resolves when login is successful.
+     * Verifies the success of the login operation by checking the current URL.
+     * Checks if the user has successfully navigated to the LinkedIn main feed.
+     * @returns {Promise<void>} Resolves once the verification process is complete.
      */
-    async loginToLinkedIn(username: string, password: string) {
-        if (!this.driver) {
-            throw new Error('Driver is not initialized');
-        }
-        try {
-            let signInButton: WebdriverIO.Element | null = null;
-            let passwordField: WebdriverIO.Element;
-
-            //Step 1: Navigate to LinkedIn login page
-            consoleLogYellow("Navigating to LinkedIn login page...");
-            await this.driver.$(ElementIdentifiers.TAB_BAR_TITLE).click();
-            await this.driver.$(ElementIdentifiers.URL_ADDRESS).setValue(URLs.LINKEDIN_LOGIN);
-            await this.driver.$(ElementIdentifiers.GO_BUTTON).click();
-
-            //Step 2: Fill in username and dealing with 'Welcome back' screen vs default login
-            //because 'Welcome back' screen has the username already pre-filled
-            let isDefaultLogin = false;
-            try {
-                let welcomeBackElements: WebdriverIO.Element[] = await this.driver.$$(ElementIdentifiers.WELCOME_BACK);
-                if (welcomeBackElements.length == 0) {
-                    //"'Welcome back' screen not present.
-                    consoleLogYellow("Filling in username...");
-
-                    const linkedInUserName = await this.driver.$(ElementIdentifiers.USERNAME);
-                    await linkedInUserName.click();
-                    await linkedInUserName.setValue(username);
-                    //in default login screen the element for Sign in button is diffrent, and keyboard may blocking it
-                    isDefaultLogin = true;
-                    signInButton = await this.driver.$("-ios class chain:**/XCUIElementTypeButton[`name == \"Sign in\"`]");
-                } else {
-                    consoleLogYellow("'Welcome back' screen detected. Skipping enterting username.");
-                }
-            } catch (error: any) {
-                console.error("Error handling 'Welcome back' screen:", error.message);
-            }
-
-            //Step 3: Fill in the password and submit
-            consoleLogYellow("Filling in password...");
-            passwordField = await this.driver.$(ElementIdentifiers.PASSWORD);
-            await passwordField.click();
-            await passwordField.setValue(password);
-            //closing keyboard to reveal covered Sign in button
-            await (await this.driver.$(ElementIdentifiers.VERTICAL_SCROLL)).click();
-            //Ensure signInButton is reassigned
-            if (!isDefaultLogin) {
-                consoleLogYellow("Sign-in button not found earlier. Using normal selector.");
-                signInButton = await this.driver.$(ElementIdentifiers.NORMAL_SIGN_IN_BUTTON);
-            }
-            if (signInButton) {
-                await signInButton.click();
-                consoleLogYellow("Login submitted.");
-            } else {
-                console.error("Sign-in button not found.");
-                return;
-            }
-
-            //Step 4: Handle "Save password" prompt
-            let savePasswordPrompt: WebdriverIO.Element[] = await this.driver.$$(
-                '//XCUIElementTypeOther[@name="Would you like to save this password to use with apps and websites?"]/XCUIElementTypeOther'
-            );
-            if (savePasswordPrompt.length > 0) {
-                const notNowButton = await this.driver.$(ElementIdentifiers.NOT_NOW_BUTTON).click();
-                consoleLogYellow("Skipped saving password.");
-            }
-
-            //Step 5: Verify login success
-            consoleLogYellow("Verifying login...");
-            const currentUrl = await this.getURL();
-            //Check if the current URL matches the LinkedIn main feed URL
-            if (currentUrl.startsWith(URLs.LINKEDIN_FEED)) {
-                consoleLogYellow("Login successful! Now on the LinkedIn main feed.");
-            } else {
-                consoleLogYellow("Login failed. Not logged in...");
-            }
-        } catch (error: any) {
-            console.error("Error during loginToLinkedIn():", error.message);
+    async verifyLogin() {
+        consoleLogYellow("Verifying login...");
+        const currentUrl = await this.getURL();
+        //Check if the current URL matches the LinkedIn main feed URL
+        if (currentUrl.startsWith(URLs.LINKEDIN_FEED)) {
+            consoleLogYellow("Login successful! Now on the LinkedIn main feed.");
+        } else {
+            consoleLogYellow("Login failed. Not logged in...");
         }
     }
 
@@ -313,36 +262,45 @@ export class LinkedInPage {
             if (currentUrl.startsWith(URLs.LINKEDIN_AUTH)) {
                 consoleLogYellow("Not logged in, on sign-in page. Signing in...");
                 //Proceed to login
-                await this.loginToLinkedIn(username, password);
+                await this.linkedinLogin.login(username, password);
                 //Return to the Contacts app and click the LinkedIn profile again
                 await this.returnToContactsApp();
                 await this.openContactLinkedIn();
             } else if (currentUrl.includes(socialProfile)) {
                 //URL is already showing the social profile of contact
-                await this.closedPopUps(); //make sure popups are closed
+                await this.closePopUps(); //make sure popups are closed
                 try {
-                    //make sure that we are logged in
-                    let signInButton: WebdriverIO.Element[] = await this.driver.$$(
+                    //make sure that we are logged in, if not 'Sign in' is presented
+                    const signInButton: WebdriverIO.Element[] = await this.driver.$$(
                         `-ios class chain:**/XCUIElementTypeLink[\`name == "Sign in"\`]`
                     );
                     //checking for sign-in button
-                    if (signInButton.length > 0) {
+                    if (signInButton.length > 0) { //meaning not logged in
                         consoleLogYellow(`Showing contact LinkedIn profile, but not logged in. Current URL: ${currentUrl}`);
-                        await this.loginToLinkedIn(username, password);
+                        await this.linkedinLogin.login(username, password);
+                        await this.verifyLogin();
                         await this.returnToContactsApp();
                         await this.openContactLinkedIn();
                     } else {
                         consoleLogYellow(`Logged in and showing contact LinkedIn profile. Current URL: ${currentUrl}`);
                     }
-                } catch (error: any) {
-                    console.error(`Error in showLinkedIn() when URL is already contact social profile ${error.message}`);
+                } catch (error: unknown) {
+                    if (error instanceof Error) {
+                        console.error(`Error in showLinkedIn() when URL is already the contact social profile: ${error.message}`);
+                    } else {
+                        console.error("An unknown error occurred in showLinkedIn():", error);
+                    }
                 }
             } else {
                 console.log(`Not logged in. Current URL: ${currentUrl}`);
             }
 
-        } catch (error: any) {
-            console.error(`Error in showLinkedIn(): ${error.message}`);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error(`Error in showLinkedIn(): ${error.message}`);
+            } else {
+                console.error("An unknown error occurred in showLinkedIn():", error);
+            }
         }
     }
 }

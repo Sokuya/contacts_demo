@@ -16,14 +16,14 @@ export interface ContactDetails {
     socialProfile: string;
   }
 
-/**
- * Represents an error related to Appium, with potential properties for name, message, and stack trace.
- */
-interface AppiumError {
-    /** The name of the error */
-    name: string;
-    /** A description of the error */
-    message: string;
-    /** The stack trace of the error (optional) */
-    stack?: string;
-}
+// /**
+//  * Represents an error related to Appium, with potential properties for name, message, and stack trace.
+//  */
+// interface AppiumError {
+//     /** The name of the error */
+//     name: string;
+//     /** A description of the error */
+//     message: string;
+//     /** The stack trace of the error (optional) */
+//     stack?: string;
+// }

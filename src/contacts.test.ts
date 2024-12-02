@@ -4,7 +4,7 @@ import { ContactsPage } from './pages/ContactsPage';
 import { LinkedInPage } from './pages/LinkedInPage';
 import { TestData } from './config/TestData';
 import { devices } from './config/DeviceConfig'; // Import device matrix
-import { WaitHelper } from './utils/WaitHelper';
+import { Constants, WaitHelper } from './utils/WaitHelper';
 import dotenv from 'dotenv';
 
 dotenv.config(); // Load environment variables from .env into process.env
@@ -89,7 +89,7 @@ describe('Create iOS Appium connection', function () {
   it('Test should create new contact and take a screenshot at the end', async () => {
     const { firstName, lastName, company, phone, email, socialProfile } = TestData.contacts.default;
     await contactsPage.addNewContact(firstName, lastName, company, phone, email, socialProfile);
-    await WaitHelper.delay(1000); // Wait for 1 second before taking a screenshot to allow the animations to finish.
+    await WaitHelper.delay(); // Wait before taking a screenshot to allow the animations to finish.
     await app.takeScreenshot();
   });
 

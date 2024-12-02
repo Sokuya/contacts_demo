@@ -1,3 +1,15 @@
+export const Constants = {
+  TIMEOUTS: {
+    SHORT: 1000,
+    MEDIUM: 3000,
+    LONG: 10000
+  },
+  RETRY: {
+    MAX_ATTEMPTS: 3,
+    DELAY: 1000
+  }
+};
+
 /**
  * A helper class for waiting operations in WebDriver tests.
  */
@@ -19,9 +31,9 @@ export class WaitHelper {
 /**
 * Pauses the execution for a given number of milliseconds.
 * 
-* @param {number} ms - The number of milliseconds to wait.
+* @param {number} ms - The number of milliseconds to wait. Default to 'Constants.TIMEOUTS.SHORT'
 */
-  static async delay(ms: number) {
+  static async delay(ms: number = Constants.TIMEOUTS.SHORT) {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
