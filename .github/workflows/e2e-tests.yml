@@ -27,6 +27,9 @@ jobs:
       - name: Check Xcode Version
         run: xcodebuild -version
 
+      - name: Set up Xcode environment
+        run: xcode-select --switch /Applications/Xcode.app/Contents/Developer
+
       - name: List Available Simulators
         run: xcrun simctl list
       
@@ -35,14 +38,18 @@ jobs:
           xcrun simctl boot "iPhone SE (3rd generation)" || echo "Simulator already booted"
           sleep 10
           
-      - name: Start iOS Simulator
-        run: open -a Simulator
-
       - name: Start Appium server
-        run: appium --port 4723 --log-level error &
+        run: appium --port 4723 --log-level debug > appium.log 2>&1 &
       
       - name: Wait for Appium server to start
         run: sleep 5
+
+      - name: Display Appium log
+        run: cat appium.log
+
+      - name: Check if port 4723 is in use
+        run: lsof -i :4723 || echo "Port 4723 is free"
+
 
       - name: Check Appium Server
         run: curl http://127.0.0.1:4723/status
