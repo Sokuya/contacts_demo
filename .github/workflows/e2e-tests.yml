@@ -30,13 +30,14 @@ jobs:
       - name: Verify the Xcode environment
         run: xcode-select -p
 
-      - name: List Available Simulators
-        run: xcrun simctl list
+      - name: List Available Simulators/Devices
+        run: xcrun simctl list devices
       
       - name: Start iOS Simulator
         run: |
-          xcrun simctl boot "iPhone SE (3rd generation)" || echo "Simulator already booted"
+          xcrun simctl boot "iPhone SE (3rd generation)" "iOS 17.2" || echo "Simulator already booted"
           sleep 10
+          xcrun simctl list devices
           
       - name: Start Appium server
         run: appium --port 4723 --log-level debug > appium.log 2>&1 &
