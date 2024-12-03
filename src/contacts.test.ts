@@ -81,8 +81,6 @@ describe('Create iOS Appium connection', function () {
    * Signs in to LinkedIn using the provided credentials.
    */
   it('Test for adding new contact and opening its LinkedIn profile and singing-in', async () => {
-    console.log('LinkedIn Username:', process.env.LINKEDIN_USERNAME);
-    console.log('LinkedIn Password:', process.env.LINKEDIN_PASSWORD);
     const { firstName, lastName, company, phone, email, socialProfile } = TestData.contacts.default;
     await contactsPage.addNewContact(firstName, lastName, company, phone, email, socialProfile);
     console.log(`Using LinkedIn username: ${credentials.username}`)
