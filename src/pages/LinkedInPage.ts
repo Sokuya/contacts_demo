@@ -66,11 +66,6 @@ export class LinkedInPage {
         linkedInElements = (await this.driver.$$(
           '-ios class chain:**/XCUIElementTypeCell[`name == "LinkedIn"`]',
         ) as unknown) as WebdriverIO.Element[];
-        //
-        // linkedInElements = await this.driver.$$(
-        //   '-ios class chain:**/XCUIElementTypeCell[`name == "LinkedIn"`]',
-        // )
-        //
         if (linkedInElements.length > 0) {
           // If the element is found (length at least 1), click it and break the loop
           await linkedInElements[0].click();
