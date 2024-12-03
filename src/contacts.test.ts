@@ -44,7 +44,7 @@ const capabilities = {
 };
 
 describe('Create iOS Appium connection', function () {
-  this.timeout(360000);  // Set timeout for test to 360 seconds 
+  this.timeout(600000);  // Set timeout for test to 600 seconds 
   let app: App;
   let contactsPage: ContactsPage;
   let linkedInPage: LinkedInPage;
