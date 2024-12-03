@@ -27,8 +27,8 @@ jobs:
       - name: Check Xcode Version
         run: xcodebuild -version
 
-      - name: Set up Xcode environment
-        run: xcode-select --switch /Applications/Xcode.app/Contents/Developer
+      - name: Verify the Xcode environment
+        run: xcode-select -p
 
       - name: List Available Simulators
         run: xcrun simctl list
