@@ -29,12 +29,23 @@ jobs:
 
       - name: List Available Simulators
         run: xcrun simctl list
+      
+      - name: Start iOS Simulator
+        run: |
+          xcrun simctl boot "iPhone SE (3rd generation)" || echo "Simulator already booted"
+          sleep 10
+          
+      - name: Start iOS Simulator
+        run: open -a Simulator
 
       - name: Start Appium server
         run: appium --port 4723 --log-level error &
       
       - name: Wait for Appium server to start
         run: sleep 5
+
+      - name: Check Appium Server
+        run: curl http://127.0.0.1:4723/status
 
       - name: Run tests
         env:
